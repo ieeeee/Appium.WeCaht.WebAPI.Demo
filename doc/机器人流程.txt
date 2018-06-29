@@ -1,0 +1,53 @@
+
+==========================================
+
+朋友圈发送流程
+
+1.切换tabBar至“发现”
+
+2.查找、点击 “朋友圈”
+//android.widget.TextView[@resource-id=\"android:id/title\" and @text=\"朋友圈\"]
+
+3.查找、点击 “相机”
+accessibility id	拍照分享
+id	com.tencent.mm:id/hh
+xpath	//android.widget.ImageButton[@content-desc="拍照分享"]
+
+4.可发送纯文本、图片、视频等...暂时不做研究，大致方法就是查找、点击；
+
+
+==========================================
+
+发起群聊流程
+
+1.查找、点击右上“+”
+accessibility id	更多功能按钮
+xpath	//android.widget.RelativeLayout[@content-desc="更多功能按钮"]
+
+2.查找、点击“发起群聊”
+xpath	//android.widget.TextView[@resource-id=\"com.tencent.mm:id/ge\" and @text=\"发起群聊\"]
+
+3.查找、勾选“联系人”
+xpath	//android.widget.TextView[@resource-id=\"com.tencent.mm:id/lp\" and @text=\"{contact}\"]
+
+4.查找、点击右上“确定”
+id	com.tencent.mm:id/hg
+
+5.剩下的可复用之前的消息发送流程
+
+6.结束
+
+==========================================
+选择已经存在的群聊发送消息
+
+1.查找、点击“通讯录”
+
+2.查找、点击“群聊”
+xpath	//android.widget.TextView[@resource-id=\"com.tencent.mm:id/k3\" and @text=\"群聊\"]
+
+3.查找、勾选“联系人”
+xpath	//android.widget.TextView[@resource-id=\"com.tencent.mm:id/aaq\" and @text=\"{groupname}\"]
+
+4.剩下的可复用之前的消息发送流程
+
+4.结束
