@@ -39,5 +39,11 @@ namespace Appium.WeChat.WebAPI.AppiumModel.Params
 
         [JsonProperty("app")]
         public string app { get; set; }
+
+        [JsonProperty("unicodeKeyboard")]
+        public bool unicodeKeyboard { get; set; }
+
+        [JsonProperty("resetKeyboard")]
+        public bool resetKeyboard { get; set; }
     }
 }

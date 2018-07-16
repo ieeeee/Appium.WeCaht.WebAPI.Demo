@@ -1,4 +1,5 @@
 ﻿using Appium.WeChat.WebAPI.AppiumModel.Result;
+using Appium.WeChat.WebAPI.Config;
 using Appium.WeChat.WebAPI.Tools;
 using RestSharp;
 using System;
@@ -69,9 +70,7 @@ namespace Appium.WeChat.WebAPI.Core
             try
             {
                 var response = RequestSender.Send<Result_SendKeys>(request);
-                //return response != null;
-                //未详细验证以下条件
-                return response != null && string.IsNullOrWhiteSpace(response.Value);
+                return response != null && response.Status == 0;
             }
             catch (Exception)
             {
@@ -134,22 +133,21 @@ namespace Appium.WeChat.WebAPI.Core
             {
                 //Q:查找联系人
                 string element = string.Empty;
-                element = FindElement(appiumSessionId, "xpath", $"//android.view.View[@resource-id=\"com.tencent.mm:id/as6\" and @text=\"{contact}\"]");
+                element = FindElement(appiumSessionId, "xpath", $"//android.view.View[@resource-id=\"{InitDeviceConfig.element.Home_Contact}\" and @text=\"{contact}\"]");
                 if (!string.IsNullOrWhiteSpace(element))
                 {
                     //C:点击联系人
                     if (Clicklement(appiumSessionId, element))
                     {
                         //Q:查找消息输入框
-                        element = FindElement(appiumSessionId, "id", "com.tencent.mm:id/ac8");
-
+                        element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Chat_Input_Message);
                         if (!string.IsNullOrWhiteSpace(element))
                         {
                             //S:输入消息内容
                             if (SetElementVal(appiumSessionId, element, new string[] { message }))
                             {
                                 //Q:查找发送按钮
-                                element = FindElement(appiumSessionId, "id", "com.tencent.mm:id/acd");
+                                element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Chat_Btn_Send);
 
                                 if (!string.IsNullOrWhiteSpace(element))
                                 {
@@ -157,7 +155,8 @@ namespace Appium.WeChat.WebAPI.Core
                                     if (Clicklement(appiumSessionId, element))
                                     {
                                         //Q:查找返回按钮
-                                        element = FindElement(appiumSessionId, "accessibility id", "返回");
+                                        //element = FindElement(appiumSessionId, "accessibility id", "返回");
+                                        element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Back);
                                         if (!string.IsNullOrWhiteSpace(element))
                                         {
                                             //C:点击返回按钮
@@ -225,6 +224,8 @@ namespace Appium.WeChat.WebAPI.Core
             {
                 //Q:查找“联系人”
                 string element = string.Empty;
+                //2种方法都行
+                //element = FindElement(appiumSessionId, "xpath", $"//android.view.View[@resource-id=\"{InitDeviceConfig.element.Contact_Person}\" and @content-desc=\"{contact}\"]");
                 element = FindElement(appiumSessionId, "accessibility id", contact);
                 if (!string.IsNullOrWhiteSpace(element))
                 {
@@ -232,14 +233,14 @@ namespace Appium.WeChat.WebAPI.Core
                     if (Clicklement(appiumSessionId, element))
                     {
                         //Q:查找“发消息”
-                        element = FindElement(appiumSessionId, "id", "com.tencent.mm:id/ap1");
+                        element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Contact_Person_SendMsg);
                         if (!string.IsNullOrWhiteSpace(element))
                         {
                             //C:点击“发消息”
                             if (Clicklement(appiumSessionId, element))
                             {
                                 //Q:查找“消息输入框”
-                                element = FindElement(appiumSessionId, "id", "com.tencent.mm:id/ac8");
+                                element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Chat_Input_Message);
 
                                 if (!string.IsNullOrWhiteSpace(element))
                                 {
@@ -247,7 +248,7 @@ namespace Appium.WeChat.WebAPI.Core
                                     if (SetElementVal(appiumSessionId, element, new string[] { message }))
                                     {
                                         //Q:查找“发送按钮”
-                                        element = FindElement(appiumSessionId, "id", "com.tencent.mm:id/acd");
+                                        element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Chat_Btn_Send);
 
                                         if (!string.IsNullOrWhiteSpace(element))
                                         {
@@ -256,7 +257,7 @@ namespace Appium.WeChat.WebAPI.Core
                                             {
                                                 //Q:查找“返回按钮”
                                                 //element = FindElement(appiumSessionId, "accessibility id", "返回");
-                                                element = FindElement(appiumSessionId, "id", "com.tencent.mm:id/hl");
+                                                element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Back);
                                                 if (!string.IsNullOrWhiteSpace(element))
                                                 {
                                                     //C:点击“返回按钮”
@@ -333,14 +334,15 @@ namespace Appium.WeChat.WebAPI.Core
             {
                 //Q:查找右上+
                 string element = string.Empty;
-                element = FindElement(appiumSessionId, "accessibility id", "更多功能按钮");
+                //element = FindElement(appiumSessionId, "accessibility id", "更多功能按钮");
+                element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Right_Top_Plus);
                 if (!string.IsNullOrWhiteSpace(element))
                 {
                     //C:点击右上+
                     if (Clicklement(appiumSessionId, element))
                     {
                         //Q:查找发起群聊
-                        element = FindElement(appiumSessionId, "xpath", "//android.widget.TextView[@resource-id=\"com.tencent.mm:id/ge\" and @text=\"发起群聊\"]");
+                        element = FindElement(appiumSessionId, "xpath", $"//android.widget.TextView[@resource-id=\"{InitDeviceConfig.element.Right_Top_Plus_GroupChat}\" and @text=\"发起群聊\"]");
                         if (!string.IsNullOrWhiteSpace(element))
                         {
                             //C:点击发起群聊
@@ -349,7 +351,7 @@ namespace Appium.WeChat.WebAPI.Core
                                 //勾选所有联系人
                                 for (int i = 0; i < contacts.Length; i++)
                                 {
-                                    string elContact = FindElement(appiumSessionId, "xpath", $"//android.widget.TextView[@resource-id=\"com.tencent.mm:id/lp\" and @text=\"{contacts[i]}\"]");
+                                    string elContact = FindElement(appiumSessionId, "xpath", $"//android.widget.TextView[@resource-id=\"{InitDeviceConfig.element.Right_Top_Plus_GroupChat_Person}\" and @text=\"{contacts[i]}\"]");
                                     if (!string.IsNullOrWhiteSpace(element))
                                     {
                                         Clicklement(appiumSessionId, elContact);
@@ -357,14 +359,14 @@ namespace Appium.WeChat.WebAPI.Core
                                 }
 
                                 //Q:查找右上确定
-                                element = FindElement(appiumSessionId, "id", "com.tencent.mm:id/hg");
+                                element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Right_Top_Plus_GroupChat_Ok);
                                 if (!string.IsNullOrWhiteSpace(element))
                                 {
                                     //C:点击右上确定
                                     if (Clicklement(appiumSessionId, element))
                                     {
                                         //Q:查找“消息输入框”
-                                        element = FindElement(appiumSessionId, "id", "com.tencent.mm:id/ac8");
+                                        element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Chat_Input_Message);
 
                                         if (!string.IsNullOrWhiteSpace(element))
                                         {
@@ -372,7 +374,7 @@ namespace Appium.WeChat.WebAPI.Core
                                             if (SetElementVal(appiumSessionId, element, new string[] { message }))
                                             {
                                                 //Q:查找“发送按钮”
-                                                element = FindElement(appiumSessionId, "id", "com.tencent.mm:id/acd");
+                                                element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Chat_Btn_Send);
 
                                                 if (!string.IsNullOrWhiteSpace(element))
                                                 {
@@ -381,7 +383,7 @@ namespace Appium.WeChat.WebAPI.Core
                                                     {
                                                         //Q:查找“返回按钮”
                                                         //element = FindElement(appiumSessionId, "accessibility id", "返回");
-                                                        element = FindElement(appiumSessionId, "id", "com.tencent.mm:id/hl");
+                                                        element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Back);
                                                         if (!string.IsNullOrWhiteSpace(element))
                                                         {
                                                             //C:点击“返回按钮”
@@ -471,28 +473,28 @@ namespace Appium.WeChat.WebAPI.Core
                 string element = string.Empty;
 
                 //Q:查找群聊
-                element = FindElement(appiumSessionId, "xpath", "//android.widget.TextView[@resource-id=\"com.tencent.mm:id/k3\" and @text=\"群聊\"]");
+                element = FindElement(appiumSessionId, "xpath", $"//android.widget.TextView[@resource-id=\"{InitDeviceConfig.element.Contact_Group}\" and @text=\"群聊\"]");
                 if (!string.IsNullOrWhiteSpace(element))
                 {
                     //C:点击群聊
                     if (Clicklement(appiumSessionId, element))
                     {
                         //Q:查找群聊分组
-                        element = FindElement(appiumSessionId, "xpath", $"//android.widget.TextView[@resource-id=\"com.tencent.mm:id/aaq\" and @text=\"{groupname}\"]");
+                        element = FindElement(appiumSessionId, "xpath", $"//android.widget.TextView[@resource-id=\"{InitDeviceConfig.element.Contact_Group_Name}\" and @text=\"{groupname}\"]");
                         if (!string.IsNullOrWhiteSpace(element))
                         {
                             //C:点击群聊分组
                             if (Clicklement(appiumSessionId, element))
                             {
                                 //Q:查找消息输入框
-                                element = FindElement(appiumSessionId, "id", "com.tencent.mm:id/ac8");
+                                element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Chat_Input_Message);
                                 if (!string.IsNullOrWhiteSpace(element))
                                 {
                                     //S:输入消息内容
                                     if (SetElementVal(appiumSessionId, element, new string[] { message }))
                                     {
                                         //Q:查找发送按钮
-                                        element = FindElement(appiumSessionId, "id", "com.tencent.mm:id/acd");
+                                        element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Chat_Btn_Send);
                                         if (!string.IsNullOrWhiteSpace(element))
                                         {
                                             //C:点击“发送按钮”
@@ -500,7 +502,7 @@ namespace Appium.WeChat.WebAPI.Core
                                             {
                                                 //Q:查找“返回按钮”
                                                 //element = FindElement(appiumSessionId, "accessibility id", "返回");
-                                                element = FindElement(appiumSessionId, "id", "com.tencent.mm:id/hl");
+                                                element = FindElement(appiumSessionId, "id", InitDeviceConfig.element.Back);
                                                 if (!string.IsNullOrWhiteSpace(element))
                                                 {
                                                     //C:点击“返回按钮”
@@ -601,10 +603,10 @@ namespace Appium.WeChat.WebAPI.Core
             {
                 //Q:查找切换TabBar
                 string element = string.Empty;
-                element = FindElement(appiumSessionId, "xpath", $"//android.widget.TextView[@resource-id=\"com.tencent.mm:id/cdj\" and @text=\"{tabBarName}\"]");
+                element = FindElement(appiumSessionId, "xpath", $"//android.widget.TextView[@resource-id=\"{InitDeviceConfig.element.NavBar}\" and @text=\"{tabBarName}\"]");
                 if (!string.IsNullOrWhiteSpace(element))
                 {
-                    //C:点击“通讯录”
+                    //C:点击“tabBarName”
                     if (Clicklement(appiumSessionId, element))
                     {
                         Loger.Info("OK---> 点击通讯录");

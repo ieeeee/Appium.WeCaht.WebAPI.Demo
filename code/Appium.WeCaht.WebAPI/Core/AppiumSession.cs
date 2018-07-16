@@ -28,7 +28,7 @@ namespace Appium.WeChat.WebAPI.Core
             try
             {
                 var request = new RestRequest("session", Method.POST);
-                request.AddJsonBody(Caps.android);
+                request.AddJsonBody(InitDeviceConfig.capsinfo);
 
                 var session = RequestSender.Send<Result_CreateSession>(request);
                 return session.SessionId;

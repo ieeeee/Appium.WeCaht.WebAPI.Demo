@@ -1,4 +1,5 @@
-﻿using Appium.WeChat.WebAPI.Core;
+﻿using Appium.WeChat.WebAPI.Config;
+using Appium.WeChat.WebAPI.Core;
 using Appium.WeChat.WebAPI.Quartz.Jobs;
 using Appium.WeChat.WebAPI.Tools;
 using Quartz;
